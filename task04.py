@@ -11,38 +11,42 @@ def input_error(func):
         try:
             return func(*args, **kwargs)
         except KeyError:
-            return "Enter user name."
+            return "Sorry, contact not found."
         except ValueError:
-            return "Give me name and phone please."
+            return "Enter name and phone please."
         except IndexError:
-            return "Not enough parameters provided."
+            return "Enter all required parameters please."
     return inner
 
-
+@input_error
 def add_contact(args, contacts):
+    if len(args) != 2:           
+        raise IndexError     
     name, phone = args
     contacts[name] = phone
     return "Contact added."
 
+@input_error
 def change_contact(args, contacts):
-    if len(args) != 2:
-        return "Error: You must provide a name and a new phone number."     
+    if len(args) != 2:           
+        raise ValueError
     name, new_phone = args
-    if name not in contacts:
-        return f"Error: Contact '{name}' not found."
-    
+    if name not in contacts:         
+        raise KeyError
     contacts[name] = new_phone
     return "Contact update." 
 
+@input_error
 def show_phone(args, contacts):
     if len(args) != 1:
-        return "Error: You must provide exactly one name."
+        raise ValueError         
     name = args[0]
     if name in contacts:
         return contacts[name]
-    else:
-        return f"Error: Contact '{name}' not found."
+    else: 
+        raise KeyError         
 
+@input_error
 def show_all(contacts):
     if not contacts:
         return "No contacts found."
